@@ -29,13 +29,13 @@ export class ModelDirective implements OnDestroy {
 
 function validatorFactory(model: Signal<Record<string, any>>, field: string, suiteId: string): ValidatorFn | ValidatorFn[] {
 	const vestValidator = (control: AbstractControl): ValidationErrors | null => {
-		console.log(suiteId, field, control.value);
+		console.log(suiteId, field, control.value, JSON.stringify(model(), null, 5));
 		const updatedModel = {
 			...model(),
 			[field]: control.value,
 		};
 		const result = suite(updatedModel, field);
-		// control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+
 		console.log('VEST ERRORS:', result.getErrors());
 		return null;
 	};

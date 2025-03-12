@@ -10,7 +10,7 @@ export const suite = create((model: any = {}, field: string) => {
 	});
 
 	test('firstName', 'Firstname should be longer than 2 chars', () => {
-		enforce(model.firstName).longerThan(1);
+		enforce(model.firstName).longerThan(2);
 	});
 
 	test('children', 'Should have at least 1 child', () => {
@@ -28,7 +28,7 @@ export const suite = create((model: any = {}, field: string) => {
 			enforce(field.age).isNotBlank();
 		});
 
-		omitWhen(field.age === '', () => {
+		omitWhen(!field.age, () => {
 			test('age', 'Minimum age is 6', () => {
 				enforce(field.age).isNumber().greaterThan(5);
 			});
