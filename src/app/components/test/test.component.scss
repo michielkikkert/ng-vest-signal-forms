@@ -8,11 +8,18 @@
   font-family: Arial, sans-serif;
 }
 
+button[disabled] {
+  opacity: 0.5;
+}
 .debug {
   display: flex;
   justify-content: end;
   flex-direction: column;
   margin-left: 10%;
+}
+
+.ng-invalid {
+  border-color: red !important;
 }
 
 .auth-container {

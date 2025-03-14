@@ -1,65 +1,63 @@
 <div class="auth-container">
 	<div class="auth-box">
 		<div class="auth-header">
-			<h1>Template/Signal based form with Vest model validation</h1>
-			<!--      <p class="subtitle">Start building better software today.</p>-->
+			<h1>Reactive form with Vest model validation</h1>
 		</div>
 
-		<form class="auth-form" #signupform="ngForm" suite="signupForm" [model]="form.value()" (ngSubmit)="submit()">
-				<!-- (formChanges)="formChanges($event)" -->
-				<div class="form-group">
-					<label for="firstName">First name</label>
-					<input type="text" id="firstName" name="firstName" required [(ngModel)]="form.control.firstName.value" />
-				</div>
+		<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+			<div class="form-group">
+				<label for="firstName">First name</label>
+				<input type="text" id="firstName" name="firstName" formControlName="firstName" />
+				{{form.get(['firstName']).errors?.error}}
+			</div>
 
-				<div class="form-group">
-					<label for="lastName">Last name</label>
-					<input type="text" id="lastName" name="lastName" required [(ngModel)]="form.control.lastName.value" />
-				</div>
+			<div class="form-group">
+				<label for="lastName">Last name</label>
+				<input type="text" id="lastName" name="lastName" formControlName="lastName" />
+			</div>
 
-				<div class="form-group">
-					<label for="email">Email address</label>
-					<input type="email" id="email" name="email" [(ngModel)]="form.control.email.value" />
-				</div>
-				<div class="form-group">
-					<label for="password">Password</label>
-					<input type="password" id="password" name="password" [(ngModel)]="form.control.password.value" />
-				</div>
+			<div class="form-group">
+				<label for="email">Email address</label>
+				<input type="email" id="email" name="email" formControlName="email" />
+			</div>
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" id="password" name="password" formControlName="password" />
+			</div>
 
-				<div class="form-group">
-					<label for="confirmPassword">Confirm password</label>
-					<input type="password" id="confirmPassword" name="confirmPassword" required [(ngModel)]="form.control.confirmPassword.value" />
-					@if (form.status().confirmPassword?.errors) {
-						<div style="color: red">
-							{{ form.status().confirmPassword.errors | json }}
-						</div>
-					}
-				</div>
-				<h2>Children:</h2>
-				@for (child of form.control.children.value(); track child; let i = $index) {
+			<div class="form-group">
+				<label for="confirmPassword">Confirm password</label>
+				<input type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" />
+			</div>
+
+
+			<h2>Children:</h2>
+
+			<ng-container formArrayName = 'children'>
+				@for (child of children.controls; track child; let i = $index) {
+					Child {{i}}
+					<ng-container [formGroupName]="i">
 					<div class="form-group">
 						<label>Name</label>
-						<input type="text" [name]="'children-name-' + i" required [(ngModel)]="form.control.children.value()[i].name" />
+						<input type="text" formControlName="name" />
+						{{form.get(['children', i, 'name']).errors?.error}}
 					</div>
 					<div class="form-group">
 						<label>Age</label>
-						<input type="number" [name]="'children-age-' + i" required [(ngModel)]="form.control.children.value()[i].age" />
+						<input type="number" formControlName="age" />
+						{{form.get(['children', i, 'age']).errors?.error}}
 					</div>
-					<button type="button" (click)="removeChild(child)">remove</button>
-				} @empty {
-					<h2>Add a Child</h2>
+					</ng-container>
+					{{form.get(['children', i, 'name']).valid}}
+					<button type="button" (click)="removeChild(i)">remove</button>
 				}
-				<button type="button" class="submit-btn" (click)="addChild()">Add Child</button>
-				<button type="submit" class="submit-btn">Submit</button>
-			</form>
-
+			</ng-container>
+			<button type="button" class="submit-btn" [disabled]="form.controls.children.length &&  form.controls.children.invalid" (click)="addChild()">Add Child</button>
+			<button type="submit" class="submit-btn" [disabled]="!form.valid">Submit</button>
+		</form>
 	</div>
 </div>
 <div class="debug">
-
-	<pre>valid: {{ form.valid() | json }}</pre>
-	<pre>form.control: {{ form.control | json }}</pre>
-	<pre>Status: {{ form.status() | json }}</pre>
-	<!--		<pre>form valid: {{ signupform.valid | json }}</pre>-->
-	<pre>value: {{ form.value() | json }}</pre>
+		<pre>{{ form.value | json}}</pre>
+		<pre>valid: {{ form.valid| json }}</pre>
 </div>
