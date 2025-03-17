@@ -32,7 +32,7 @@
 
 
 			<h2>Children:</h2>
-
+			<h3>{{form.get('children').errors?.error}}</h3>
 			<ng-container formArrayName = 'children'>
 				@for (child of children.controls; track child; let i = $index) {
 					Child {{i}}
@@ -58,6 +58,7 @@
 	</div>
 </div>
 <div class="debug">
+		<pre>Status: {{formSignal() | json}} </pre>
 		<pre>{{ form.value | json}}</pre>
 		<pre>valid: {{ form.valid| json }}</pre>
 </div>
