@@ -117,9 +117,8 @@ export class TestComponent {
 
 			if (control instanceof FormArray) {
 				const controlGroup = control?.controls;
-
 				this.form.controls.children.controls.forEach((controlInForm: FormGroup<any>, index) => {
-					const current = (controlGroup[index] as FormGroup).controls;
+					const current = (controlGroup[index] as FormGroup)?.controls;
 					if (current === controlInForm?.controls) {
 						Object.keys(current).forEach((key) => {
 							const id = `${key}-${index}`;
