@@ -168,7 +168,6 @@ export class TestComponent {
 	}
 
 	removeChild(childIndex: number) {
-		console.log(childIndex);
 		this.children.removeAt(childIndex);
 	}
 
