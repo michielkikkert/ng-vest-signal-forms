@@ -18,7 +18,7 @@ button[disabled] {
   margin-left: 10%;
 }
 
-.ng-invalid {
+.ng-invalid.ng-touched {
   border-color: red !important;
 }
 

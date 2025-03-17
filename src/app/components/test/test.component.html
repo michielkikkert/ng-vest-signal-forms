@@ -6,9 +6,11 @@
 
 		<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
 			<div class="form-group">
-				<label for="firstName">First name</label>
+				<label for="firstName">First name (*)</label>
 				<input type="text" id="firstName" name="firstName" formControlName="firstName" />
-				{{form.get(['firstName']).errors?.error}}
+				@if(form.get(['firstName']).dirty || form.controls.firstName.touched) {
+					{{form.get(['firstName']).errors?.message}}
+				}
 			</div>
 
 			<div class="form-group">
@@ -40,25 +42,28 @@
 					<div class="form-group">
 						<label>Name</label>
 						<input type="text" formControlName="name" />
-						{{form.get(['children', i, 'name']).errors?.error}}
+						{{form.get(['children', i, 'name']).errors?.message}}
 					</div>
 					<div class="form-group">
 						<label>Age</label>
 						<input type="number" formControlName="age" />
-						{{form.get(['children', i, 'age']).errors?.error}}
+						{{form.get(['children', i, 'age']).errors?.message}}
 					</div>
 					</ng-container>
-					{{form.get(['children', i, 'name']).valid}}
+					{{form.get(['children']).errors | json}}
 					<button type="button" (click)="removeChild(i)">remove</button>
 				}
 			</ng-container>
-			<button type="button" class="submit-btn" [disabled]="form.controls.children.length &&  form.controls.children.invalid" (click)="addChild()">Add Child</button>
-			<button type="submit" class="submit-btn" [disabled]="!form.valid">Submit</button>
+
+			{{form.get(['children']).errors?.message}}
+			<button type="button" class="submit-btn"  (click)="addChild()">Add Child</button> <!-- [disabled]="form.controls.children.length &&  form.controls.children.invalid" -->
+			<button type="submit" class="submit-btn" >Submit</button> <!-- [disabled]="!form.valid" -->
 		</form>
 	</div>
 </div>
 <div class="debug">
-		<pre>Status: {{formSignal() | json}} </pre>
-		<pre>{{ form.value | json}}</pre>
+		<pre>form: {{formSignal() | json}} </pre>
+		<pre> Validations: {{ suiteSignal() | json }}</pre>
+		<pre>{{ form.errors | json}}</pre>
 		<pre>valid: {{ form.valid| json }}</pre>
 </div>

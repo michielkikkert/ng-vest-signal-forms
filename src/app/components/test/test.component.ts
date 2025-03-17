@@ -1,4 +1,4 @@
-import { Component, Signal } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { suite } from '../../validators/validations';
@@ -111,22 +111,29 @@ export class TestComponent {
 			control.parent?.updateValueAndValidity();
 
 			// Set the validation model
-			const formValue = this.form.value || control.parent?.parent?.value || control.parent.value;
+			const formValue = this.form.value || control.parent?.parent?.value || control.parent?.value;
 			const result = suite(formValue, field, group).getErrors();
 			const errors = result[field];
 
-			if (errors?.length) {
-				const [message, subControl, index] = errors[0].split('|');
-				if (field === subControl) {
-					return {
-						error: message,
-					};
-				}
-				if (!subControl && field === controlName) {
-					return { error: message };
-				}
+			if (control instanceof FormArray) {
+				const controlGroup = control?.controls;
+
+				this.form.controls.children.controls.forEach((controlInForm: FormGroup<any>, index) => {
+					const current = (controlGroup[index] as FormGroup).controls;
+					if (current === controlInForm?.controls) {
+						Object.keys(current).forEach((key) => {
+							const id = `${key}-${index}`;
+							const currentResult = suite(formValue, id, group).getErrors()?.[id];
+							if (currentResult?.length) {
+								current[key].setErrors({ message: currentResult[0] });
+							} else {
+								current[key].setErrors(null);
+							}
+						});
+					}
+				});
 			}
-			return null;
+			return errors ? { message: errors } : null;
 		};
 	};
 
@@ -135,22 +142,18 @@ export class TestComponent {
 			firstName: new FormControl('', [this.vestValidatorFactory('firstName', 'bla')]),
 			lastName: new FormControl(''),
 			email: new FormControl(''),
-			password: new FormControl(''),
-			confirmPassword: new FormControl(''),
-			children: new FormArray(
-				[
-					new FormGroup({
-						name: new FormControl('', [this.vestValidatorFactory('name')]),
-						age: new FormControl<number | null>(null, [this.vestValidatorFactory('age')]),
-					}),
-				],
-				[this.vestValidatorFactory('children')],
-			),
+			password: new FormControl('abc', [this.vestValidatorFactory('password')]),
+			confirmPassword: new FormControl('abc', [this.vestValidatorFactory('confirmPassword')]),
+			children: new FormArray([], [this.vestValidatorFactory('children')]),
 		},
 		[],
 	);
 
 	public formSignal: Signal<any>;
+	public suiteSignal = computed(() => {
+		this.formSignal();
+		return suite.getErrors();
+	});
 
 	constructor() {
 		this.formSignal = toSignal(this.form.valueChanges);
@@ -162,8 +165,8 @@ export class TestComponent {
 
 	get newChild() {
 		return new FormGroup({
-			name: new FormControl('', [this.vestValidatorFactory('name')]),
-			age: new FormControl<number | null>(null, [this.vestValidatorFactory('age')]),
+			name: new FormControl(''),
+			age: new FormControl<number | null>(null),
 		});
 	}
 
@@ -181,6 +184,14 @@ export class TestComponent {
 
 	submit() {
 		console.log('SUBMIT');
+
+		console.log('SUITE RESULT', suite.getErrors());
+
+		if (this.form.invalid) {
+			this.form.markAllAsTouched();
+			return;
+		}
+
 		console.log('valid', this.form.valid);
 		console.log('value', this.form.value);
 	}
