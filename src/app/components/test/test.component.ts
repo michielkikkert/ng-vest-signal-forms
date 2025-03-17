@@ -137,17 +137,14 @@ export class TestComponent {
 		};
 	};
 
-	public form = new FormGroup(
-		{
-			firstName: new FormControl('', [this.vestValidatorFactory('firstName', 'bla')]),
-			lastName: new FormControl(''),
-			email: new FormControl(''),
-			password: new FormControl('abc', [this.vestValidatorFactory('password')]),
-			confirmPassword: new FormControl('abc', [this.vestValidatorFactory('confirmPassword')]),
-			children: new FormArray([], [this.vestValidatorFactory('children')]),
-		},
-		[],
-	);
+	public form = new FormGroup({
+		firstName: new FormControl('', [this.vestValidatorFactory('firstName', 'bla')]),
+		lastName: new FormControl('', [this.vestValidatorFactory('lastName')]),
+		email: new FormControl('', [this.vestValidatorFactory('email')]),
+		password: new FormControl('abc', [this.vestValidatorFactory('password')]),
+		confirmPassword: new FormControl('abc', [this.vestValidatorFactory('confirmPassword')]),
+		children: new FormArray([], [this.vestValidatorFactory('children')]),
+	});
 
 	public formSignal: Signal<any>;
 	public suiteSignal = computed(() => {

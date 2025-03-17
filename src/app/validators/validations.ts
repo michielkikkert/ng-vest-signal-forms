@@ -13,12 +13,7 @@ enforce.extend({
 export const suite = create((model: any, field: string, groupName) => {
 	only(field);
 
-	console.log(field);
-	//
-	// console.log(JSON.stringify(model));
-
-	// skip(!suite.isTested('firstName'));
-
+	// just a simple test
 	group('bla', () => {
 		skip(groupName !== 'bla');
 		test('firstName', 'Firstname is required', () => {
@@ -30,54 +25,57 @@ export const suite = create((model: any, field: string, groupName) => {
 		});
 	});
 
+	// Test some of the inputs
 	test('lastName', 'Lastname is required', () => {
 		enforce(model.lastName).isNotBlank();
 	});
+
+	// Also include confirm when password field is tested
+	include('confirmPassword').when('password');
 
 	test('password', 'Password is required', () => {
 		enforce(model.password).isNotBlank();
 	});
 
-	omitWhen(!model.password || !model.confirmPassword, () => {
-		test('confirmPassword', 'Passwords should match', () => {
-			enforce(model.password).equals(model.confirmPassword);
-		});
+	test('confirmPassword', 'Passwords should match', () => {
+		enforce(model.password).equals(model.confirmPassword);
 	});
 
 	test('children', 'Should have at least 1 child', () => {
 		enforce(model.children).isNotNullish().longerThan(0);
 	});
 
-	// omitWhen(!model.children.length, () => {
-	each(model.children, ({ age, name }, index) => {
-		test(
-			`name-${index}`,
-			`Name is required`,
-			() => {
-				enforce(name).isNotBlank();
-			},
-			`name${index}`,
-		);
+	// Optimization with omitWhen
+	omitWhen(!model.children.length, () => {
+		each(model.children, ({ age, name }, index) => {
+			test(
+				`name-${index}`,
+				`Name is required`,
+				() => {
+					enforce(name).isNotBlank();
+				},
+				`name${index}`,
+			);
 
-		test(
-			`age-${index}`,
-			`Age is required`,
-			() => {
-				enforce(age).isNotNullish();
-			},
-			`age${index}`,
-		);
-		//
-		omitWhen(!age, () => {
 			test(
 				`age-${index}`,
-				`Minimum age is 6`,
+				`Age is required`,
 				() => {
-					enforce(age).isNumber().greaterThan(5);
+					enforce(age).isNotNullish();
 				},
 				`age${index}`,
 			);
+			//
+			omitWhen(!age, () => {
+				test(
+					`age-${index}`,
+					`Minimum age is 6`,
+					() => {
+						enforce(age).isNumber().greaterThan(5);
+					},
+					`age${index}`,
+				);
+			});
 		});
 	});
-	// });
 });
