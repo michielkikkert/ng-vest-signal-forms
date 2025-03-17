@@ -1,8 +1,8 @@
 import { Component, computed, Signal } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
-import { suite } from '../../validators/validations';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { AbstractControl, FormArray, FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { suite } from '../../validators/validations';
 
 type FormConfigItem = {
 	name: string;
@@ -145,15 +145,11 @@ export class TestComponent {
 		children: new FormArray([], [this.vestValidatorFactory('children')]),
 	});
 
-	public formSignal: Signal<any>;
+	public formSignal = toSignal(this.form.valueChanges);
 	public suiteSignal = computed(() => {
 		this.formSignal();
 		return suite.getErrors();
 	});
-
-	constructor() {
-		this.formSignal = toSignal(this.form.valueChanges);
-	}
 
 	get children() {
 		return this.form.controls.children as FormArray;
@@ -168,9 +164,7 @@ export class TestComponent {
 
 	addChild() {
 		this.children.push(this.newChild);
-		// setTimeout(() => {
 		this.form.updateValueAndValidity();
-		// }, 0);
 	}
 
 	removeChild(childIndex: number) {
@@ -180,7 +174,6 @@ export class TestComponent {
 
 	submit() {
 		console.log('SUBMIT');
-
 		console.log('SUITE RESULT', suite.getErrors());
 
 		if (this.form.invalid) {
@@ -191,14 +184,4 @@ export class TestComponent {
 		console.log('valid', this.form.valid);
 		console.log('value', this.form.value);
 	}
-
-	getControlStatus(control: AbstractControl<any, any> | null) {
-		return {
-			errors: control?.errors || null,
-			dirty: control?.dirty,
-			valid: control?.valid,
-		};
-	}
-
-	createForm(config: FormConfigItem[], ngForm: Signal<NgForm>) {}
 }
