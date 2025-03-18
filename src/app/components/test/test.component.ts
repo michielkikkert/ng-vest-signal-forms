@@ -107,22 +107,26 @@ export class TestComponent {
 			const controlName = Object.keys(control.parent?.controls || {}).find((key) => control.parent.get(key) === control);
 			if (!controlName) return null;
 
+			const isFormControl = control instanceof FormControl;
+			const isFormGroup = control instanceof FormGroup;
+			const isFormArray = control instanceof FormArray;
+
 			// Update the form so it is equal to the incoming control
 			control.parent?.updateValueAndValidity();
 
 			// Set the validation model
 			const formValue = this.form.value || control.parent?.parent?.value || control.parent?.value;
 			const result = suite(formValue, field, group).getErrors();
-			const errors = result[field];
 
-			if (control instanceof FormArray) {
+			// Handle FormArray
+			if (isFormArray) {
 				const controlGroup = control?.controls;
-				this.form.controls.children.controls.forEach((controlInForm: FormGroup<any>, index) => {
+				this.form.controls[controlName].controls.forEach((controlInForm: FormGroup<any>, index) => {
 					const current = (controlGroup[index] as FormGroup)?.controls;
 					if (current === controlInForm?.controls) {
 						Object.keys(current).forEach((key) => {
-							const id = `${key}-${index}`;
-							const currentResult = suite(formValue, id, group).getErrors()?.[id];
+							const id = `${controlName}-${key}-${index}`;
+							const currentResult = suite(formValue, id, group, controlName).getErrors()?.[id];
 							if (currentResult?.length) {
 								current[key].setErrors({ message: currentResult[0] });
 							} else {
@@ -132,7 +136,26 @@ export class TestComponent {
 					}
 				});
 			}
-			return errors ? { message: errors } : null;
+
+			// Handle FormGroup
+			if (isFormGroup) {
+				const controlGroup = control?.controls;
+				Object.entries(controlGroup).forEach(([name, control]) => {
+					if (result[name]) {
+						control.setErrors({ message: result[name][0] });
+					} else {
+						control.setErrors(null);
+					}
+				});
+			}
+
+			// Handle a single control
+			if (isFormControl) {
+				const errors = result[field];
+				return errors ? { message: errors } : null;
+			}
+
+			return null;
 		};
 	};
 
@@ -140,8 +163,13 @@ export class TestComponent {
 		firstName: new FormControl('', [this.vestValidatorFactory('firstName', 'bla')]),
 		lastName: new FormControl('', [this.vestValidatorFactory('lastName')]),
 		email: new FormControl('', [this.vestValidatorFactory('email')]),
-		password: new FormControl('abc', [this.vestValidatorFactory('password')]),
-		confirmPassword: new FormControl('abc', [this.vestValidatorFactory('confirmPassword')]),
+		passwordGroup: new FormGroup(
+			{
+				password: new FormControl('abc'),
+				confirmPassword: new FormControl('abc'),
+			},
+			[this.vestValidatorFactory('passwordGroup')],
+		),
 		children: new FormArray([], [this.vestValidatorFactory('children')]),
 	});
 

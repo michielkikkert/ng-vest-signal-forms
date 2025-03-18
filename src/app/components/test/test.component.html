@@ -22,16 +22,18 @@
 				<label for="email">Email address</label>
 				<input type="email" id="email" name="email" formControlName="email" />
 			</div>
-			<div class="form-group">
-				<label for="password">Password</label>
-				<input type="password" id="password" name="password" formControlName="password" />
+			<div class="form-group" formGroupName="passwordGroup">
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" id="password" name="password" formControlName="password" />
+				</div>
+				{{form.get(['passwordGroup', 'password']).errors?.message}}
+				<div class="form-group">
+					<label for="confirmPassword">Confirm password</label>
+					<input type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" />
+				</div>
+				{{form.get(['passwordGroup', 'confirmPassword']).errors?.message}}
 			</div>
-
-			<div class="form-group">
-				<label for="confirmPassword">Confirm password</label>
-				<input type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" />
-			</div>
-
 
 			<h2>Children:</h2>
 			<h3>{{form.get('children').errors?.error}}</h3>
