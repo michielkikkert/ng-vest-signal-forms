@@ -7,15 +7,14 @@ import { suite } from '../../validators/validations';
 type FormConfigItem = {
 	name: string;
 	label: string;
-	type: string;
-	value: any | Signal<any> | Signal<Record<string, any>>;
-	validate: boolean;
+	fieldType?: string;
+	formType?: 'FormControl' | 'FormArray' | 'FormGroup';
+	value: string | number | boolean | any[] | FormConfigItem[];
+	skipValidation?: boolean;
 };
 
 type FormConfig = FormConfigItem & {
-	model?: {
-		fields: FormConfigItem[];
-	};
+	fields?: FormConfigItem[];
 };
 
 type Child = {
@@ -43,62 +42,59 @@ export class TestComponent {
 		{
 			name: 'firstName',
 			label: 'First Name',
-			type: 'text',
+			fieldType: 'text',
 			value: 'Michiel',
-			validate: true,
 		},
 		{
 			name: 'lastName',
 			label: 'Last Name',
-			type: 'text',
+			fieldType: 'text',
 			value: 'Kikkert',
-			validate: true,
 		},
 		{
 			name: 'email',
 			label: 'Email',
-			type: 'email',
+			fieldType: 'email',
 			value: '',
-			validate: true,
 		},
 		{
-			name: 'password',
-			label: 'Password',
-			type: 'password',
-			value: '',
-			validate: true,
-		},
-		{
-			name: 'confirmPassword',
-			label: 'Confirm Password',
-			type: 'password',
-			value: '',
-			validate: true,
+			name: 'passwordGroup',
+			label: '',
+			formType: 'FormGroup',
+			value: [
+				{
+					name: 'password',
+					label: 'Password',
+					fieldType: 'password',
+					value: '',
+				},
+				{
+					name: 'confirmPassword',
+					label: 'Confirm Password',
+					fieldType: 'password',
+					value: '',
+				},
+			],
 		},
 		{
 			name: 'children',
 			label: 'Children',
-			type: 'array',
+			formType: 'FormArray',
 			value: [],
-			validate: true,
-			model: {
-				fields: [
-					{
-						name: 'name',
-						label: 'Name',
-						type: 'text',
-						value: '',
-						validate: true,
-					},
-					{
-						name: 'name',
-						label: 'Name',
-						type: 'text',
-						value: '',
-						validate: true,
-					},
-				],
-			},
+			fields: [
+				{
+					name: 'name',
+					label: 'Name',
+					fieldType: 'text',
+					value: '',
+				},
+				{
+					name: 'age',
+					label: 'Age',
+					fieldType: 'text',
+					value: '',
+				},
+			],
 		},
 	];
 
