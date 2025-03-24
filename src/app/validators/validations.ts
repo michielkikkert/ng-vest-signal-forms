@@ -1,16 +1,6 @@
 import { create, test, enforce, group, only, skip, warn, each, omitWhen, skipWhen, include } from 'vest';
 import 'vest/enforce/email';
 
-enforce.extend({
-	isChildValid: (value) => {
-		const context = enforce.context();
-
-		console.log({ context });
-
-		return true;
-	},
-});
-
 export const suite = create((model: any, field: string, groupName, parent: string = '') => {
 	only(field);
 
@@ -23,6 +13,13 @@ export const suite = create((model: any, field: string, groupName, parent: strin
 
 		test('firstName', 'Firstname should be longer than 2 chars', () => {
 			enforce(model.firstName).longerThan(2);
+		});
+	});
+
+	group('test', () => {
+		skip(groupName !== 'test');
+		test('firstName', 'Firstname is required', () => {
+			enforce(model.test).isNotBlank();
 		});
 	});
 
