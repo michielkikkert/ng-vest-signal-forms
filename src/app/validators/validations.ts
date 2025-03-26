@@ -55,38 +55,39 @@ export const suite = create((model: any, field: string, groupName, parent: strin
 	});
 
 	// Optimization with omitWhen
-	omitWhen(!model.children.length, () => {
-		// Testingg controls in FormArray is a bit complex. We need to be able to uniquely identify these controls..
-		// .. like [array parent] - [control name] - [index]
-		each(model.children, ({ age, name }, index) => {
-			test(
-				`children-name-${index}`,
-				`Name is required`,
-				() => {
-					enforce(name).isNotBlank();
-				},
-				`children-name${index}`,
-			);
-
-			test(
-				`children-age-${index}`,
-				`Age is required`,
-				() => {
-					enforce(age).isNotNullish();
-				},
-				`children-age${index}`,
-			);
-
-			omitWhen(!age, () => {
-				test(
-					`children-age-${index}`,
-					`Minimum age is 6`,
-					() => {
-						enforce(age).isNumber().greaterThan(5);
-					},
-					`children-age${index}`,
-				);
-			});
-		});
-	});
+	// omitWhen(!model.children?.length, () => {
+	// 	// Testingg controls in FormArray is a bit complex. We need to be able to uniquely identify these controls..
+	// 	// .. like [array parent] - [control name] - [index]
+	// 	model?.children &&
+	// 		each(model?.children, ({ age, name }, index) => {
+	// 			test(
+	// 				`children-name-${index}`,
+	// 				`Name is required`,
+	// 				() => {
+	// 					enforce(name).isNotBlank();
+	// 				},
+	// 				`children-name${index}`,
+	// 			);
+	//
+	// 			test(
+	// 				`children-age-${index}`,
+	// 				`Age is required`,
+	// 				() => {
+	// 					enforce(age).isNotNullish();
+	// 				},
+	// 				`children-age${index}`,
+	// 			);
+	//
+	// 			omitWhen(!age, () => {
+	// 				test(
+	// 					`children-age-${index}`,
+	// 					`Minimum age is 6`,
+	// 					() => {
+	// 						enforce(age).isNumber().greaterThan(5);
+	// 					},
+	// 					`children-age${index}`,
+	// 				);
+	// 			});
+	// 		});
+	// });
 });

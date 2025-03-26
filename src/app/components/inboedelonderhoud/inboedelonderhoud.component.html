@@ -1,0 +1,56 @@
+<div class="auth-container">
+	<div class="auth-box">
+		<div class="auth-header">
+			<h1>Inboedel en onderhoud</h1>
+		</div>
+
+		<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+			<div class="form-group">
+				Heb je een partner?
+				<label for="heeftPartnerJa">Ja</label>
+				<input type="radio" id="heeftPartnerJa"  [value]="true" formControlName="heeftPartner" />
+
+				<label for="heeftPartnerNee">Nee</label>
+				<input type="radio" id="heeftPartnerNee"  [value]="false" formControlName="heeftPartner" />
+
+				@if(form.get(['heeftPartner']).dirty || form.controls.heeftPartner.touched) {
+					{{form.get(['heeftPartner']).errors?.message}}
+				}
+			</div>
+			<div class="form-group">
+				Soort woning?
+				<label for="soortWoningHuur">Huur</label>
+				<input type="radio" id="soortWoningHuur"  value="HuurWoning" formControlName="soortWoning" />
+
+				<label for="soortWoningKoop">Koop</label>
+				<input type="radio" id="soortWoningKoop"  value="KoopWoning" formControlName="soortWoning" />
+
+				@if(form.controls.soortWoning.dirty || form.controls.soortWoning.touched) {
+					{{form.controls.soortWoning.errors?.message}}
+				}
+			</div>
+			@if(form.controls.soortWoning.value === 'KoopWoning'){
+				<div class="form-group">
+					<label for="wozWaarde">Woz Waarde</label>
+					<input type="number" id="wozWaarde"  formControlName="wozWaarde" />
+				</div>
+			}
+		</form>
+		<p>
+			<button type="button" class="submit-btn" [routerLink]="'../introductie'">terug</button>
+			<button type="button" class="submit-btn" [routerLink]="'../auto'">stap 2</button>
+		</p>
+
+
+
+	</div>
+</div>
+<div class="debug">
+	<pre>form: {{formSignal() | json}} </pre>
+	<pre>rootForm: {{rootForm.value | json}} </pre>
+	<pre> Validations: {{ suiteSignal() | json }}</pre>
+	<pre>form valid: {{ form.valid| json }}</pre>
+	<pre>root form valid: {{ rootForm.valid| json }}</pre>
+</div>
+
+

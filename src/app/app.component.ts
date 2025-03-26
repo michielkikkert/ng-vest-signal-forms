@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { DataService } from './services/data.service';
 
 @Component({
 	selector: 'app-root',
@@ -9,4 +10,9 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
 	title = 'ng-vest-signal-forms';
+	dataService = inject(DataService);
+
+	constructor() {
+		console.log(this.dataService.getStepConfig('inboedelonderhoud'));
+	}
 }

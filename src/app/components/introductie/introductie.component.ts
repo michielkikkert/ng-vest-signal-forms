@@ -1,17 +1,17 @@
 import { Component, computed } from '@angular/core';
-import { JsonPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
-import { suite } from '../../validators/validations';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { vestValidatorFactory } from '../../helpers/vest.validator';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { suite } from '../../validators/validations';
+import { RouterLink } from '@angular/router';
 
 @Component({
-	selector: 'app-test',
-	templateUrl: './test.component.html',
-	imports: [JsonPipe, ReactiveFormsModule],
-	styleUrls: ['./test.component.scss'],
+	selector: 'app-introductie',
+	imports: [ReactiveFormsModule, RouterLink],
+	templateUrl: './introductie.component.html',
+	styleUrl: './introductie.component.scss',
 })
-export class TestComponent {
+export class IntroductieComponent {
 	public form = new FormGroup({
 		firstName: new FormControl('', [vestValidatorFactory('firstName', 'bla')]),
 		lastName: new FormControl('', [vestValidatorFactory('lastName')]),
