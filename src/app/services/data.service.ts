@@ -22,7 +22,7 @@ export class DataService {
 	}
 
 	public getForm(step: string): FormGroup {
-		return this.forms[step].form;
+		return this.forms[step];
 	}
 
 	public getRootForm() {
@@ -61,7 +61,7 @@ export class DataService {
 						});
 						return new FormGroup(controlObject);
 					});
-					currentControls[control.name] = new FormArray(controlsArray, [vestValidatorFactory(control.name)]);
+					currentControls[control.name] = new FormArray(controlsArray, [vestValidatorFactory(control.name, step)]);
 				}
 
 				if (control.formType === 'FormGroup') {
@@ -69,30 +69,25 @@ export class DataService {
 					((control.value as FormConfigItem[]) || []).forEach((groupControl) => {
 						controlGroup[groupControl.name] = new FormControl(groupControl.value);
 					});
-					currentControls[control.name] = new FormGroup(controlGroup, [vestValidatorFactory(control.name)]);
+					currentControls[control.name] = new FormGroup(controlGroup, [vestValidatorFactory(control.name, step)]);
 				}
 
 				if (!control.formType || control.formType === 'FormControl') {
-					currentControls[control.name] = new FormControl(control.value, [vestValidatorFactory(control.name)]);
+					currentControls[control.name] = new FormControl(control.value, [vestValidatorFactory(control.name, step)]);
 				}
 			});
 
-			const formGroup = new FormGroup(currentControls);
-			const formChanges = toSignal(formGroup.valueChanges);
-
-			forms[step] = {
-				form: formGroup as FormGroup,
-				formChanges,
-			};
+			forms[step] = new FormGroup(currentControls);
 		});
 
 		return forms;
 	}
 
-	createRootForm(forms: Record<string, { form: FormGroup; formChange: Signal<any> }>): FormGroup {
+	createRootForm(forms: Record<string, FormGroup>): FormGroup {
 		const rootForm = new FormGroup({});
-		Object.entries(forms).forEach(([key, formsObject]) => {
-			rootForm.addControl(key, formsObject.form);
+		Object.entries(forms).forEach(([key, form]) => {
+			rootForm.addControl(key, form);
+			// rootForm.controls[key].addValidators([vestValidatorFactory(key, 'root')]);
 		});
 		return rootForm;
 	}

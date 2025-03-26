@@ -27,16 +27,23 @@ export const nibudAppConfig: AppConfigModel = {
 					value: 0,
 				},
 				{
-					name: 'soortWoning',
-					label: 'Heb je een huurwoning of koopwoning?',
-					fieldType: 'toggle',
-					value: null as null | 'Koopwoning' | 'Huurwoning',
-				},
-				{
-					name: 'wozWaarde',
-					label: 'Wat is de WOZ-waarde van je woning?',
-					fieldType: 'toggle',
-					value: null as null | number,
+					name: 'woningGroup',
+					label: '',
+					formType: 'FormGroup',
+					value: [
+						{
+							name: 'soortWoning',
+							label: 'Heb je een huurwoning of koopwoning?',
+							fieldType: 'toggle',
+							value: null as null | 'Koopwoning' | 'Huurwoning',
+						},
+						{
+							name: 'wozWaarde',
+							label: 'Wat is de WOZ-waarde van je woning?',
+							fieldType: 'toggle',
+							value: null as null | number,
+						},
+					],
 				},
 			],
 		},

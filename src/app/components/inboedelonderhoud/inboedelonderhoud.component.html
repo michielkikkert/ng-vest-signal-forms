@@ -17,35 +17,42 @@
 					{{form.get(['heeftPartner']).errors?.message}}
 				}
 			</div>
-			<div class="form-group">
-				Soort woning?
-				<label for="soortWoningHuur">Huur</label>
-				<input type="radio" id="soortWoningHuur"  value="HuurWoning" formControlName="soortWoning" />
-
-				<label for="soortWoningKoop">Koop</label>
-				<input type="radio" id="soortWoningKoop"  value="KoopWoning" formControlName="soortWoning" />
-
-				@if(form.controls.soortWoning.dirty || form.controls.soortWoning.touched) {
-					{{form.controls.soortWoning.errors?.message}}
-				}
-			</div>
-			@if(form.controls.soortWoning.value === 'KoopWoning'){
+			<ng-container formGroupName="woningGroup">
 				<div class="form-group">
-					<label for="wozWaarde">Woz Waarde</label>
-					<input type="number" id="wozWaarde"  formControlName="wozWaarde" />
+					Soort woning?
+					<label for="soortWoningHuur">Huur</label>
+					<input type="radio" id="soortWoningHuur"  value="HuurWoning" formControlName="soortWoning" />
+
+					<label for="soortWoningKoop">Koop</label>
+					<input type="radio" id="soortWoningKoop"  value="KoopWoning" formControlName="soortWoning" />
+
+					@if(form.get(['woningGroup','soortWoning']).dirty || form.get(['woningGroup','soortWoning']).touched) {
+						{{form.get(['woningGroup','soortWoning']).errors?.message}}
+					}
 				</div>
-			}
+				@if(form.get(['woningGroup','soortWoning']).value === 'KoopWoning'){
+					<div class="form-group">
+						<label for="wozWaarde">Woz Waarde</label>
+						<input type="number" id="wozWaarde"  formControlName="wozWaarde" />
+					</div>
+					@if(form.get(['woningGroup','wozWaarde']).dirty || form.get(['woningGroup','wozWaarde']).touched) {
+						{{form.get(['woningGroup','wozWaarde']).errors?.message}}
+					}
+				}
+			</ng-container>
+			<p>
+				<button type="button" class="submit-btn" [routerLink]="'../introductie'">terug</button>
+				<button type="submit" class="submit-btn">stap 2</button>
+			</p>
 		</form>
-		<p>
-			<button type="button" class="submit-btn" [routerLink]="'../introductie'">terug</button>
-			<button type="button" class="submit-btn" [routerLink]="'../auto'">stap 2</button>
-		</p>
 
 
 
 	</div>
 </div>
 <div class="debug">
+	<button (click)="refresh()">refresh</button>
+	<pre>wozWaarde: {{form.get(['woningGroup','wozWaarde']).valid | json}}</pre>
 	<pre>form: {{formSignal() | json}} </pre>
 	<pre>rootForm: {{rootForm.value | json}} </pre>
 	<pre> Validations: {{ suiteSignal() | json }}</pre>

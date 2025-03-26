@@ -3,7 +3,7 @@ import { JsonPipe } from '@angular/common';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { suite } from '../../validators/validations';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 
 @Component({
@@ -14,6 +14,7 @@ import { DataService } from '../../services/data.service';
 })
 export class InboedelonderhoudComponent {
 	private dataService = inject(DataService);
+	private router = inject(Router);
 	public form = this.dataService.getForm('inboedelonderhoud');
 	public rootForm = this.dataService.getRootForm();
 
@@ -24,7 +25,18 @@ export class InboedelonderhoudComponent {
 	});
 
 	constructor() {
-		// this.form.updateValueAndValidity();
+		// Needs unsubbing!
+		this.form.get(['woningGroup', 'soortWoning']).valueChanges.subscribe((val) => {
+			if (val === 'HuurWoning') {
+				this.form.get(['woningGroup', 'wozWaarde']).setValue(null);
+			}
+		});
+	}
+
+	refresh() {
+		if (!suite.getErrors()?.wozWaarde && this.form.get(['woningGroup', 'wozWaarde']).invalid) {
+			this.form.get(['woningGroup', 'wozWaarde']).setValue(null);
+		}
 	}
 
 	get children() {
@@ -58,5 +70,6 @@ export class InboedelonderhoudComponent {
 
 		console.log('valid', this.form.valid);
 		console.log('value', this.form.value);
+		this.router.navigate(['../auto']);
 	}
 }

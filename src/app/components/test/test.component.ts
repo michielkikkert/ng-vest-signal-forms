@@ -13,17 +13,17 @@ import { vestValidatorFactory } from '../../helpers/vest.validator';
 })
 export class TestComponent {
 	public form = new FormGroup({
-		firstName: new FormControl('', [vestValidatorFactory('firstName', 'bla')]),
-		lastName: new FormControl('', [vestValidatorFactory('lastName')]),
-		email: new FormControl('', [vestValidatorFactory('email')]),
+		firstName: new FormControl('', [vestValidatorFactory('firstName', 'test')]),
+		lastName: new FormControl('', [vestValidatorFactory('lastName', 'test')]),
+		email: new FormControl('', [vestValidatorFactory('email', 'test')]),
 		passwordGroup: new FormGroup(
 			{
 				password: new FormControl('abc'),
 				confirmPassword: new FormControl('abc'),
 			},
-			[vestValidatorFactory('passwordGroup')],
+			[vestValidatorFactory('passwordGroup', 'test')],
 		),
-		children: new FormArray([], [vestValidatorFactory('children')]),
+		children: new FormArray([], [vestValidatorFactory('children', 'test')]),
 	});
 
 	public formSignal = toSignal(this.form.valueChanges);

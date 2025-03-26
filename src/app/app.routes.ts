@@ -27,6 +27,10 @@ export function getRoutes(config: AppConfigModel): Routes {
 			loadComponent: () => import('./components/resultaat/resultaat.component').then((c) => c.ResultaatComponent),
 		},
 		{
+			path: 'test',
+			loadComponent: () => import('./components/test/test.component').then((c) => c.TestComponent),
+		},
+		{
 			path: '**',
 			redirectTo: 'introductie',
 			pathMatch: 'full',

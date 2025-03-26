@@ -1,1 +1,62 @@
-<p>auto works!</p>
+<div class="auth-container">
+	<div class="auth-box">
+		<div class="auth-header">
+			<h1>Auto</h1>
+		</div>
+
+		<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+			<div class="form-group">
+				Heb je auto?
+				<label for="autoJa">Ja</label>
+				<input type="radio" id="autoJa"  [value]="true" formControlName="heeftAuto" />
+
+				<label for="autoNee">Nee</label>
+				<input type="radio" id="autoNee"  [value]="false" formControlName="heeftAuto" />
+
+				@if(form.get(['heeftAuto']).dirty || form.controls.heeftAuto.touched) {
+					{{form.get(['heeftAuto']).errors?.message}}
+				}
+			</div>
+			<ng-container formArrayName = 'Autos'>
+				@for (auto of Autos.controls; track auto; let i = $index) {
+					Auto {{i}}
+					<ng-container [formGroupName]="i">
+						<div class="form-group">
+							<label>Nieuwwaarde</label>
+							<input type="text" formControlName="NieuwWaarde" />
+							{{form.get(['Autos', i, 'NieuwWaarde']).errors?.message}}
+						</div>
+						<div class="form-group">
+							<label>Nieuw</label>
+							<input type="radio" value="Nieuw" formControlName="StatusAuto" />
+							<label>Tweede hands</label>
+							<input type="radio" value="Tweedehands" formControlName="StatusAuto" />
+							{{form.get(['Autos', i, 'StatusAuto']).errors?.message}}
+						</div>
+					</ng-container>
+					<button type="button" (click)="removeAuto(i)">remove</button>
+				}
+				{{form.get(['Autos']).errors?.message}}
+			</ng-container>
+			<button type="button" (click)="addAuto()">Auto toevoegen</button>
+			<p>
+				<button type="button" class="submit-btn" [routerLink]="'../inboedel-en-onderhoud'">terug</button>
+				<button type="submit" class="submit-btn">Resultaat</button>
+			</p>
+		</form>
+
+
+
+	</div>
+</div>
+<div class="debug">
+	<button (click)="refresh()">refresh</button>
+	<pre>form: {{formSignal() | json}} </pre>
+	<pre>rootForm: {{rootForm.value | json}} </pre>
+	<pre> Validations: {{ suiteSignal() | json }}</pre>
+	<pre>form valid: {{ form.valid| json }}</pre>
+	<pre>root form valid: {{ rootForm.valid| json }}</pre>
+</div>
+
+
+

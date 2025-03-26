@@ -11,14 +11,18 @@ export function vestValidatorFactory(field = '', group = '') {
 		const isFormArray = control instanceof FormArray;
 
 		// get the current state of the form (looking up to 3 levels up from the current control)
-		const form = control.parent?.parent?.parent || control.parent?.parent || control.parent;
+		const form = control.parent;
 		// Update the form (value) so it is up to date with the incoming control
 		form.updateValueAndValidity();
+		// form?.parent?.updateValueAndValidity();
+		// form?.parent?.parent?.updateValueAndValidity();
+
 		// Get the (parent) form value
 		const formValue = form.value;
 
 		// Run the validation suite for the current field against the root form
 		const result = suite(formValue, field, group).getErrors();
+		const errors = result[field];
 
 		// Handle FormArray
 		if (isFormArray) {
@@ -43,6 +47,7 @@ export function vestValidatorFactory(field = '', group = '') {
 					});
 				}
 			});
+			return errors ? { message: errors } : null;
 		}
 
 		// Handle FormGroup
@@ -55,11 +60,11 @@ export function vestValidatorFactory(field = '', group = '') {
 					control.setErrors(null);
 				}
 			});
+			return errors ? { message: errors } : null;
 		}
 
 		// Handle a single control
 		if (isFormControl) {
-			const errors = result[field];
 			return errors ? { message: errors } : null;
 		}
 
