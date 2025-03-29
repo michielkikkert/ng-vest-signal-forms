@@ -1,7 +1,8 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { suite } from '../validators/validations';
+import { signal, Signal } from '@angular/core';
 
-export function vestValidatorFactory(field = '', group = '') {
+export function vestValidatorFactory(field = '', group = '', rootForm: Signal<null | FormGroup> | null = signal(null)) {
 	return (control: AbstractControl): ValidationErrors | null => {
 		const controlName = Object.keys(control.parent?.controls || {}).find((key) => control.parent.get(key) === control);
 		if (!controlName) return null;
@@ -21,7 +22,7 @@ export function vestValidatorFactory(field = '', group = '') {
 		const formValue = form.value;
 
 		// Run the validation suite for the current field against the root form
-		const result = suite(formValue, field, group).getErrors();
+		const result = suite(formValue, field, group, rootForm()).getErrors();
 		const errors = result[field];
 
 		// Handle FormArray
@@ -35,7 +36,7 @@ export function vestValidatorFactory(field = '', group = '') {
 						// This (complex) field identifier is needed so Vest can test individual, index based fields inside FormArray
 						const field = `${controlName}-${key}-${index}`;
 						// Now run the suite again, but with the correctly scoped field
-						const currentResult = suite(formValue, field, group, controlName).getErrors()?.[field];
+						const currentResult = suite(formValue, field, group, rootForm()).getErrors()?.[field];
 						// Check for errors and manually set the Errors on the array control.
 						// This is needed because in a formArray the internal controls
 						// might not have validators set.

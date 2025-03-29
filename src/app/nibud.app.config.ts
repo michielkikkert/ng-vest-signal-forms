@@ -4,6 +4,7 @@ export const nibudAppConfig: AppConfigModel = {
 	appId: 'bufferberekenaar',
 	trackingId: '',
 	partnerVersions: ['rabobank', 'ing'],
+	persistence: true,
 	steps: {
 		introductie: {
 			index: 0,
@@ -30,7 +31,7 @@ export const nibudAppConfig: AppConfigModel = {
 					name: 'woningGroup',
 					label: '',
 					formType: 'FormGroup',
-					value: [
+					controls: [
 						{
 							name: 'soortWoning',
 							label: 'Heb je een huurwoning of koopwoning?',
@@ -62,12 +63,10 @@ export const nibudAppConfig: AppConfigModel = {
 					label: 'Heb je een eigen auto?',
 					formType: 'FormArray',
 					value: [
-						{
-							NieuwWaarde: 12000,
-							StatusAuto: 'Tweedehands',
-							TypeAuto: null,
-							Selectie: 1,
-						},
+						// {
+						// 	NieuwWaarde: 12000,
+						// 	StatusAuto: 'Tweedehands',
+						// },
 					],
 					controls: [
 						{

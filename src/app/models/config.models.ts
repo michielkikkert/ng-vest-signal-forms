@@ -1,11 +1,11 @@
-export type FormConfigItem = {
+export type FormControlItem = {
 	name: string;
 	label: string;
 	fieldType?: 'text' | 'number' | 'radio' | 'checkbox' | 'toggle';
 	formType?: 'FormControl' | 'FormArray' | 'FormGroup';
-	value: string | number | boolean | any[] | FormConfigItem[];
+	value?: string | number | boolean | any[];
 	skipValidation?: boolean;
-	controls?: FormConfigItem[];
+	controls?: FormControlItem[];
 };
 
 export type StepConfig = Record<
@@ -15,7 +15,7 @@ export type StepConfig = Record<
 		label: string;
 		disabled?: boolean;
 		isResult?: boolean;
-		controls?: FormConfigItem[];
+		controls?: FormControlItem[];
 	}
 >;
 
@@ -25,4 +25,5 @@ export type AppConfigModel = {
 	partnerVersions: string[];
 	steps: StepConfig;
 	partner?: any;
+	persistence: boolean;
 };

@@ -1,10 +1,11 @@
 import { create, test, enforce, group, only, skip, warn, each, omitWhen, skipWhen, include } from 'vest';
 import 'vest/enforce/email';
+import { effect, Signal } from '@angular/core';
 
-export const suite = create((model: any, field: string, groupName, parent: string = '') => {
+export const suite = create((model: any, field: string, groupName, rootFormModel: any) => {
 	only(field);
 
-	console.log(field, groupName, JSON.stringify(model));
+	// console.log(JSON.stringify(rootFormModel));
 
 	// just a group test for later (need to check composition for multiple steps forms)
 	group('inboedelonderhoud', () => {

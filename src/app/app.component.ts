@@ -13,6 +13,6 @@ export class AppComponent {
 	dataService = inject(DataService);
 
 	constructor() {
-		console.log(this.dataService.getStepConfig('inboedelonderhoud'));
+		// console.log(this.dataService.getStepConfig('inboedelonderhoud'));
 	}
 }

@@ -25,12 +25,14 @@ export class InboedelonderhoudComponent {
 	});
 
 	constructor() {
-		// Needs unsubbing!
-		this.form.get(['woningGroup', 'soortWoning']).valueChanges.subscribe((val) => {
-			if (val === 'HuurWoning') {
-				this.form.get(['woningGroup', 'wozWaarde']).setValue(null);
-			}
-		});
+		console.log({ form: this.form });
+
+		// // Needs unsubbing!
+		// this.form.get(['woningGroup', 'soortWoning']).valueChanges.subscribe((val) => {
+		// 	if (val === 'HuurWoning') {
+		// 		this.form.get(['woningGroup', 'wozWaarde']).setValue(null);
+		// 	}
+		// });
 	}
 
 	refresh() {
